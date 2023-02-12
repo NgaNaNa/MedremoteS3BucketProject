@@ -1,0 +1,35 @@
+# Filename: s3blist.py
+# Author: Nga Rampling
+# Student ID: 14020509
+# Description of code purpose: To list S3 bucket names from AWS region ap-southeast-2
+# Date: 13-feb-2023
+# Revisions 4: 13-feb-2023, Adds (yes/no) to the prompts, Nga Rampling
+
+
+# Import noto3 module to work with AWS SDK
+import boto3
+
+# Create an AWS client
+s3 = boto3.client("s3")
+
+# Ask user to confirm the AWS default region
+printList = input("Hi! Would you like to print all the S3 bucket names \
+from AWS region ap-southeast-2 (Sydney)? (yes/no) \n")  # Max 79 characters per line of codes
+
+# Use if/else conditional statements to return bucket names on screen
+if printList == 'yes':
+    for bucket in s3.list_buckets()["Buckets"]:
+        if s3.get_bucket_location(Bucket=bucket['Name'])['LocationConstraint'] == 'ap-southeast-2':
+            print(bucket["Name"])
+    # Use if/else conditional statements to print values to text file
+    printFile = input("Would you like to print to file? (yes/no) \n")
+    if printFile == 'yes':
+        with open('bucket_names.txt', 'w') as file:   # Opens text file, give 'writes' permission
+            for bucket in s3.list_buckets()["Buckets"]:
+                file.write(str(bucket["Name"]) + "\n")  # Writes bucket names to variable file
+        print("Your list has been printed to file named bucket_names.txt")
+    elif printFile == 'no':
+        print("Goodbye.")
+elif printList == 'no':
+    print("Goodbye.")
+
